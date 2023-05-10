@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="Estilo.css">
+	<title>Verificar qual o elenco do filme</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+	<h1>Elenco de filmes</h1>
+	<form>
+		<label for="movieTitle">Título do filme:</label>
+		<input type="text" id="movieTitle" name="movieTitle" required>
+		<button type="submit">Enviar</button>
+	</form>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="result"></div>
+</body>
+</html>
+
+	<script>
+		$(document).ready(function() {
+			var endpoint = "https://api.openai.com/v1/completions";
+
+			var apiKey = "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";
+
+			$("form").submit(function(event) {
+				event.preventDefault();
+				var movieTitle = $("#movieTitle").val();
+				var prompt = "Elenco de " + movieTitle + ": ";
+				var data = {
+					"model": "text-davinci-003",
+					"prompt": prompt,
+					"temperature": 0.7,
+					"max_tokens": 256,
+					"top_p": 1,
+					"frequency_penalty": 0,
+					"presence_penalty": 0
+				};
+				$.ajax({
+					url: endpoint,
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": "Bearer " + "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"
+					},
+					method: "POST",
+					data: JSON.stringify(data),
+					success: function(response) {
+						var answer = response.choices[0].text.trim();
+						$("#result").html("<p>" + answer + "</p>");
+					},
+					error: function() {
+						$("#result").html("<p>Não foi possível completar a sua solicitação.</p>");
+					}
+				});
+			});
+		});
+	</script>
+
